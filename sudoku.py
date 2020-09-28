@@ -1,7 +1,7 @@
 import argparse
 import sys
 
-
+# CLASSES
 
 class Sudoku :
 
@@ -30,21 +30,6 @@ class Sudoku :
             s+="\n"
         return s
 
-    def possible_to_place(self, y, x, n) :
-        for i in range(9) :
-            if n == self.sudoku[y][i] : 
-                return False
-            if n == self.sudoku[i][x] : 
-                return False
-        x0 = (x // 3) * 3
-        y0 = (y // 3) * 3
-        for i in range(3) :
-            for j in range(3) :
-                if self.sudoku[y0+i][x0+j] == n :
-                    return False
-        return True
-
-
     def cell_possibilities(self, y, x) :
         cell_possible = [1,2,3,4,5,6,7,8,9]
         for i in range(9) :
@@ -68,7 +53,6 @@ class Sudoku :
                     pass
         return cell_possible
 
-
     def best_empty_pos_and_number(self) :
         solved = True
         unfilled_cells = []
@@ -77,6 +61,7 @@ class Sudoku :
                 if self.sudoku[y][x] == 0 :
                     solved = False
                     poss = self.cell_possibilities(y, x)
+                    if len(poss) == 1 : return y,x,poss
                     unfilled_cells.append((y,x,poss))    
         # sort and return first with lowest number of possibilities (but of course not empty possibilities)
         sorted_by_third = sorted(unfilled_cells, key=lambda tup: len(tup[2]))        
@@ -85,6 +70,8 @@ class Sudoku :
         else :
             return sorted_by_third[0][0],sorted_by_third[0][1],sorted_by_third[0][2]
 
+
+# FUNCTIONS
 
 def solve(sud) :
     result = sud.best_empty_pos_and_number()
@@ -103,9 +90,10 @@ def solve(sud) :
     return False
 
 
+# MAIN
+
 if __name__ == "__main__" :
     # (the following is NOT executed if this file is imported in another Python file)
-    # MAIN
     parser = argparse.ArgumentParser(description='Python script to solve sudokus. Created by <carljohanstrom@gmail.com>, version 0.1, 2020-09-23.')
     parser.add_argument('input_file', type=str, help="Input filename. One sudoku per file.")
     args = parser.parse_args()
